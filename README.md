@@ -53,7 +53,7 @@ what AI agents can see and how tool descriptions can steer them.
 ## Install
 
 Download the prebuilt binary for your platform from
-[Releases](https://github.com/Loping151/tool_glass/releases), extract the archive, and put
+[Releases](https://github.com/Loping151/ToolGlass/releases), extract the archive, and put
 `tool-glass` or `tool-glass.exe` somewhere on your `PATH`.
 
 Or install from source with Cargo:
@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Loping151/tool_glass@main
+      - uses: Loping151/ToolGlass@main
         with:
           path: .
       - uses: github/codeql-action/upload-sarif@v3

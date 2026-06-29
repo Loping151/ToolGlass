@@ -12,7 +12,7 @@ pub use markdown::{render_live_md, render_scan_md};
 pub use sarif::{render_live_sarif, render_scan_sarif};
 pub use terminal::{render_live_terminal, render_scan_terminal};
 
-pub(crate) const INFORMATION_URI: &str = "https://github.com/Loping151/tool_glass";
+pub(crate) const INFORMATION_URI: &str = "https://github.com/Loping151/ToolGlass";
 
 pub(crate) fn server_count(result: &ScanResult) -> usize {
     result.clients.iter().map(|c| c.servers.len()).sum()
