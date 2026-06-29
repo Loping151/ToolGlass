@@ -1,0 +1,8 @@
+[mcp_servers.filesystem]
+command = "uvx"
+args = ["filesystem-mcp"]
+
+[mcp_servers.github]
+command = "uvx"
+args = ["github-mcp"]
+env = { GITHUB_TOKEN = "ghp_redacted" }

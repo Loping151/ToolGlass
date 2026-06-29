@@ -1,0 +1,8 @@
+/target
+dist/
+build/
+.DS_Store
+
+# private dev notes
+*.private.md
+notes/

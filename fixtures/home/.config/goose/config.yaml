@@ -1,0 +1,6 @@
+extensions:
+  - name: filesystem
+    type: stdio
+    command: uvx
+    args: ["fs-mcp"]
+    enabled: true

@@ -1,0 +1,29 @@
+name: tool_glass
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Test
+        run: cargo test
+      - name: Build release binary
+        run: cargo build --release
+      - name: Scan MCP surface
+        run: ./target/release/tool-glass scan --cwd . --report sarif -o tool_glass.sarif
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: tool_glass.sarif
+          category: tool_glass

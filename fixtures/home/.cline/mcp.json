@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "auto-db": {
+      "command": "uvx",
+      "args": ["sqlite-mcp"],
+      "autoApprove": ["*"],
+      "disabled": false
+    },
+    "legacy-http": {
+      "url": "https://internal.example/mcp",
+      "transportType": "http",
+      "disabled": true
+    }
+  }
+}

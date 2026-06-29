@@ -1,0 +1,36 @@
+name: ToolGlass MCP Audit
+description: >-
+  Audit the MCP / agent tool surface in your repo. Reveals what AI coding tools expose to the
+  model (commands, env keys, approval states), flags tool-poisoning, and produces a SARIF report
+  for the GitHub Security tab.
+inputs:
+  path:
+    description: Directory to scan (project root by default).
+    required: false
+    default: "."
+  sarif-path:
+    description: Path to write the SARIF report.
+    required: false
+    default: "tool_glass.sarif"
+outputs:
+  sarif:
+    description: Path to the generated SARIF report.
+    value: ${{ steps.scan.outputs.sarif }}
+runs:
+  using: composite
+  steps:
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+    - name: Build ToolGlass
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: cargo build --release
+    - name: Scan MCP surface
+      id: scan
+      shell: bash
+      run: |
+        echo "sarif=${{ inputs.sarif-path }}" >> "$GITHUB_OUTPUT"
+        "${{ github.action_path }}/target/release/tool-glass" scan \
+          --cwd "${{ inputs.path }}" \
+          --report sarif \
+          -o "${{ inputs.sarif-path }}"

@@ -1,0 +1,21 @@
+[package]
+name = "tool-glass"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Show what your AI agent actually sees: a local, offline-first audit of MCP/agent tool surfaces."
+repository = "https://github.com/Loping151/tool_glass"
+readme = "README.md"
+categories = ["command-line-utilities", "development-tools"]
+keywords = ["mcp", "agent", "security", "audit", "llm"]
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+serde_yaml = "0.9"
+anyhow = "1"
+comfy-table = "7"
+regex = "1"
+ureq = { version = "2", features = ["json"] }

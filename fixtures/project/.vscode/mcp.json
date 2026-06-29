@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "remote-tools": {
+      "type": "http",
+      "url": "https://mcp.example.com/sse"
+    }
+  }
+}
