@@ -63,7 +63,10 @@ pub fn introspect_stdio(
 }
 
 pub fn introspect_http(url: &str, timeout: Duration) -> anyhow::Result<Vec<ToolDesc>> {
-    let agent = ureq::AgentBuilder::new().timeout(timeout).redirects(0).build();
+    let agent = ureq::AgentBuilder::new()
+        .timeout(timeout)
+        .redirects(0)
+        .build();
     let init = json!({
         "jsonrpc": "2.0", "id": 1, "method": "initialize",
         "params": {

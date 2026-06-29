@@ -19,3 +19,4 @@ anyhow = "1"
 comfy-table = "7"
 regex = "1"
 ureq = { version = "2", features = ["json"] }
+sha2 = "0.10"

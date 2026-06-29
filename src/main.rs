@@ -1,5 +1,6 @@
 mod adapters;
 mod analysis;
+mod baseline;
 mod demo;
 mod ir;
 mod mcp;
@@ -53,6 +54,15 @@ enum Commands {
             help = "Allow --live to execute stdio servers flagged by TG-003."
         )]
         run_dangerous: bool,
+        #[arg(
+            long,
+            value_name = "PATH",
+            num_args = 0..=1,
+            help = "Write a baseline snapshot JSON. With no PATH, uses -o/--output."
+        )]
+        snapshot: Option<Option<PathBuf>>,
+        #[arg(long, help = "Load a baseline snapshot JSON and print a diff report.")]
+        baseline: Option<PathBuf>,
     },
     /// Run the safe 'poisoned MCP' demo.
     Demo {
@@ -81,9 +91,14 @@ fn main() -> anyhow::Result<()> {
             live,
             yes,
             run_dangerous,
+            snapshot,
+            baseline,
         } => {
             let client_filter = parse_client_filter(clients);
-            let result = scan::run_scan(home.as_deref(), cwd.as_deref(), client_filter.as_deref())?;
+            let mut result =
+                scan::run_scan(home.as_deref(), cwd.as_deref(), client_filter.as_deref())?;
+            let (snapshot_path, snapshot_uses_output) =
+                resolve_snapshot_path(snapshot.as_ref(), output.as_deref())?;
 
             if live {
                 let launches = scan::live_launches(&result);
@@ -94,6 +109,25 @@ fn main() -> anyhow::Result<()> {
                 for n in &notes {
                     eprintln!("{n}");
                 }
+                let mut combined_findings = result.findings.clone();
+                combined_findings.extend(findings.clone());
+                result.findings = combined_findings;
+
+                write_snapshot(&result, &tools, snapshot_path.as_deref())?;
+                if let Some(base_path) = baseline.as_deref() {
+                    run_baseline_diff(
+                        base_path,
+                        &result,
+                        &tools,
+                        output.as_deref(),
+                        snapshot_uses_output,
+                    )?;
+                    return Ok(());
+                }
+                if snapshot_uses_output {
+                    return Ok(());
+                }
+
                 let text = if tools.is_empty() {
                     eprintln!("No MCP servers could be live-introspected; showing config report.");
                     render_scan_report(&report, &result)?
@@ -101,6 +135,21 @@ fn main() -> anyhow::Result<()> {
                     render_live_report(&report, &tools, &findings, &edges)?
                 };
                 emit(&text, output.as_deref())?;
+                return Ok(());
+            }
+
+            write_snapshot(&result, &[], snapshot_path.as_deref())?;
+            if let Some(base_path) = baseline.as_deref() {
+                run_baseline_diff(
+                    base_path,
+                    &result,
+                    &[],
+                    output.as_deref(),
+                    snapshot_uses_output,
+                )?;
+                return Ok(());
+            }
+            if snapshot_uses_output {
                 return Ok(());
             }
 
@@ -114,6 +163,59 @@ fn main() -> anyhow::Result<()> {
         Commands::DemoServer { kind } => demo::server(&kind)?,
     }
     Ok(())
+}
+
+fn resolve_snapshot_path(
+    snapshot: Option<&Option<PathBuf>>,
+    output: Option<&Path>,
+) -> anyhow::Result<(Option<PathBuf>, bool)> {
+    match snapshot {
+        Some(Some(path)) => Ok((Some(path.clone()), false)),
+        Some(None) => {
+            let Some(path) = output else {
+                anyhow::bail!("--snapshot without a path requires -o/--output");
+            };
+            Ok((Some(path.to_path_buf()), true))
+        }
+        None => Ok((None, false)),
+    }
+}
+
+fn write_snapshot(
+    result: &ir::ScanResult,
+    tools: &[ir::ExposedTool],
+    path: Option<&Path>,
+) -> anyhow::Result<()> {
+    let Some(path) = path else {
+        return Ok(());
+    };
+    let snapshot = baseline::build_snapshot(result, tools);
+    std::fs::write(path, serde_json::to_string_pretty(&snapshot)?)?;
+    eprintln!("wrote {}", path.display());
+    Ok(())
+}
+
+fn run_baseline_diff(
+    base_path: &Path,
+    result: &ir::ScanResult,
+    tools: &[ir::ExposedTool],
+    output: Option<&Path>,
+    snapshot_uses_output: bool,
+) -> anyhow::Result<()> {
+    let base = load_baseline(base_path)?;
+    let diff = baseline::compare(&base, result, tools);
+    let text = baseline::render_diff_terminal(&diff);
+    let output = if snapshot_uses_output { None } else { output };
+    emit(&text, output)?;
+    if baseline::has_new_high_finding(&diff) {
+        std::process::exit(1);
+    }
+    Ok(())
+}
+
+fn load_baseline(path: &Path) -> anyhow::Result<baseline::Snapshot> {
+    let text = std::fs::read_to_string(path)?;
+    Ok(serde_json::from_str(&text)?)
 }
 
 fn print_live_launches(launches: &[scan::LiveLaunch]) {
