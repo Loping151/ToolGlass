@@ -65,35 +65,29 @@ cargo build --release
 扫描本机配置:
 
 ```bash
-cargo run --quiet -- scan
-cargo run --quiet -- scan --report json
+tool-glass scan
+tool-glass scan --report json
 ```
 
 扫描指定项目或配置根目录:
 
 ```bash
-cargo run --quiet -- scan --cwd .
-cargo run --quiet -- scan --home /path/to/home --cwd /path/to/project
+tool-glass scan --cwd .
+tool-glass scan --home /path/to/home --cwd /path/to/project
 ```
 
 写出报告:
 
 ```bash
-cargo run --quiet -- scan --report md -o tool_glass.md
-cargo run --quiet -- scan --report html -o tool_glass.html
-cargo run --quiet -- scan --report sarif -o tool_glass.sarif
-```
-
-`cargo build --release` 后使用编译出的二进制:
-
-```bash
-./target/release/tool-glass scan --cwd . --report sarif -o tool_glass.sarif
+tool-glass scan --report md -o tool_glass.md
+tool-glass scan --report html -o tool_glass.html
+tool-glass scan --report sarif -o tool_glass.sarif
 ```
 
 实时探测需要显式开启:
 
 ```bash
-cargo run --quiet -- scan --cwd . --live --yes
+tool-glass scan --cwd . --live --yes
 ```
 
 ## 演示
@@ -101,13 +95,7 @@ cargo run --quiet -- scan --cwd . --live --yes
 零配置看到攻击长什么样:
 
 ```bash
-cargo run --quiet -- demo
-```
-
-或使用 release 二进制:
-
-```bash
-./target/release/tool-glass demo
+tool-glass demo
 ```
 
 ToolGlass 会探测两个内置的假 MCP server。一个看似无害的天气工具,会被还原出它藏着一条给模型的隐形指令:让它去读一个私密文件,再把内容发给一个聊天工具;并且 ToolGlass 会画出 `get_weather -> send_message` 的外泄路径。全程不执行任何东西:路径只是被**揭示**,而非**运行**。

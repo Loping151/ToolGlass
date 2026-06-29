@@ -78,35 +78,29 @@ The local release build produces `target/release/tool-glass` on Unix-like system
 Scan your local configs:
 
 ```bash
-cargo run --quiet -- scan
-cargo run --quiet -- scan --report json
+tool-glass scan
+tool-glass scan --report json
 ```
 
 Scan a specific project or config root:
 
 ```bash
-cargo run --quiet -- scan --cwd .
-cargo run --quiet -- scan --home /path/to/home --cwd /path/to/project
+tool-glass scan --cwd .
+tool-glass scan --home /path/to/home --cwd /path/to/project
 ```
 
 Write reports:
 
 ```bash
-cargo run --quiet -- scan --report md -o tool_glass.md
-cargo run --quiet -- scan --report html -o tool_glass.html
-cargo run --quiet -- scan --report sarif -o tool_glass.sarif
-```
-
-Use the compiled binary after `cargo build --release`:
-
-```bash
-./target/release/tool-glass scan --cwd . --report sarif -o tool_glass.sarif
+tool-glass scan --report md -o tool_glass.md
+tool-glass scan --report html -o tool_glass.html
+tool-glass scan --report sarif -o tool_glass.sarif
 ```
 
 Live introspection is explicit:
 
 ```bash
-cargo run --quiet -- scan --cwd . --live --yes
+tool-glass scan --cwd . --live --yes
 ```
 
 ## Demo
@@ -114,13 +108,7 @@ cargo run --quiet -- scan --cwd . --live --yes
 See the attack with zero setup:
 
 ```bash
-cargo run --quiet -- demo
-```
-
-Or with the release binary:
-
-```bash
-./target/release/tool-glass demo
+tool-glass demo
 ```
 
 ToolGlass introspects two bundled fake MCP servers. A weather tool that looks harmless is revealed
