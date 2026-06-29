@@ -161,7 +161,7 @@ and uploads SARIF. Findings annotate; they do not block by default.
 - [x] Tool-poisoning rules (TG-101/102/103) + cross-server exfil flow graph
 - [x] Reports: terminal, Markdown, HTML, SARIF, JSON
 - [x] GitHub Action with SARIF upload workflow
-- [ ] Baseline diff (fail CI only on newly-introduced risks)
+- [x] Baseline diff (snapshot + compare; CI fails only on new high risks)
 - [ ] More clients (Windsurf, Zed)
 - [ ] crates.io package
 

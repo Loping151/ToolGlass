@@ -142,7 +142,7 @@ target/release/tool-glass scan --cwd <path> --report sarif -o <sarif-path>
 - [x] 工具投毒规则(TG-101/102/103)+ 跨 server 外泄路径图
 - [x] 报告:终端、Markdown、HTML、SARIF、JSON
 - [x] GitHub Action 与 SARIF 上传 workflow
-- [ ] 基线 diff(CI 只对新引入风险失败)
+- [x] 基线 diff(snapshot + 对比;CI 仅对新增 high 风险失败)
 - [ ] 更多客户端(Windsurf、Zed)
 - [ ] crates.io 包
 

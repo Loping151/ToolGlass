@@ -77,7 +77,7 @@ pub fn server(kind: &str) -> anyhow::Result<()> {
             "initialize" => reply(
                 &mut out,
                 id,
-                json!({"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":kind,"version":"0.1.0"}}),
+                json!({"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":kind,"version":"0.2.0"}}),
             )?,
             "tools/list" => reply(&mut out, id, json!({"tools": tools_for(kind)}))?,
             "tools/call" => reply(

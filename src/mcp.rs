@@ -72,7 +72,7 @@ pub fn introspect_http(url: &str, timeout: Duration) -> anyhow::Result<Vec<ToolD
         "params": {
             "protocolVersion": PROTOCOL_VERSION,
             "capabilities": {},
-            "clientInfo": {"name": "tool-glass", "version": "0.1.0"},
+            "clientInfo": {"name": "tool-glass", "version": "0.2.0"},
         }
     });
     let init_resp = agent
@@ -108,7 +108,7 @@ fn handshake(
             "params": {
                 "protocolVersion": PROTOCOL_VERSION,
                 "capabilities": {},
-                "clientInfo": {"name": "tool-glass", "version": "0.1.0"},
+                "clientInfo": {"name": "tool-glass", "version": "0.2.0"},
             }
         }),
     )?;
